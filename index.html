@@ -14,7 +14,7 @@ body{font-family:'Nunito','Baloo 2',sans-serif;background:#1a0a2e;min-height:100
 
 /* PROFESSORA TAG */
 @keyframes vbFloat2{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-#prof-tag{position:fixed;bottom:.6rem;right:.75rem;z-index:600;font-family:'Nunito',sans-serif;font-size:clamp(.65rem,1.8vw,.78rem);color:#ffb890;font-weight:800;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.8);pointer-events:none;}
+#prof-tag{position:fixed;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:600;font-family:'Nunito',sans-serif;font-size:clamp(.65rem,1.8vw,.78rem);color:#ffb890;font-weight:800;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.8);pointer-events:none;}
 
 /* SCREENS */
 .screen{display:none;min-height:100vh;min-height:100dvh;padding:1.5rem .75rem max(4rem,calc(4rem + env(safe-area-inset-bottom)));align-items:center;justify-content:center;flex-direction:column;}
@@ -175,6 +175,52 @@ body{font-family:'Nunito','Baloo 2',sans-serif;background:#1a0a2e;min-height:100
 #msg{width:100%;max-width:1100px;margin:.15rem auto 0;text-align:center;font-family:'Baloo 2',sans-serif;font-size:.88rem;font-weight:900;color:#ff6b35;min-height:1.1rem;}
 .bottom-bar{display:none;}
 
+/* ══ ROBOT FLUTUANTE FIXO ══ */
+#fixed-robot-wrap{
+  position:fixed;
+  bottom:clamp(.6rem,2vh,1.2rem);
+  right:clamp(.6rem,2vw,1.2rem);
+  z-index:650;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  gap:2px;
+}
+#fixed-robot-wrap.visible{display:flex;}
+#fixed-vb-robot{
+  width:clamp(52px,7vw,68px);
+  cursor:pointer;
+  animation:vbFloat 3s ease-in-out infinite;
+  filter:drop-shadow(0 0 12px #7dd3fc);
+}
+#fixed-vb-robot:hover{filter:drop-shadow(0 0 24px #38bdf8);}
+#fixed-vb-robot.bounce{animation:robotPop .65s cubic-bezier(.34,1.56,.64,1),vbFloat 3s ease-in-out .65s infinite;}
+@keyframes robotPop{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-18px) rotate(-6deg)}70%{transform:translateY(-8px) rotate(5deg)}}
+#fixed-bubble{
+  --bc:#dcebff;
+  background:linear-gradient(135deg,var(--bc),#fff);
+  border:3px solid #0f172a;outline:2px solid #1e293b;outline-offset:-4px;
+  border-radius:14px;padding:6px 10px 5px;
+  box-shadow:3px 3px 0 #0f172a;
+  font-family:"Comic Sans MS","Trebuchet MS",sans-serif;
+  font-size:clamp(.58rem,1.2vw,.75rem);font-weight:bold;color:#0f172a;
+  max-width:160px;min-width:80px;text-align:center;
+  pointer-events:none;line-height:1.35;position:relative;
+  margin-bottom:4px;
+  opacity:0;transform:translateY(-6px) scale(.88);
+  transition:opacity .38s,transform .38s cubic-bezier(.34,1.56,.64,1);
+}
+#fixed-bubble::after{content:"";position:absolute;bottom:-13px;left:50%;transform:translateX(-50%);border-left:9px solid transparent;border-right:9px solid transparent;border-top:13px solid #0f172a;}
+#fixed-bubble::before{content:"";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid var(--bc);z-index:1;}
+#fixed-bubble.show{opacity:1;transform:translateY(0) scale(1);}
+#fixed-robot-name{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(.6rem,1.3vw,.72rem);
+  color:#ffd700;
+  text-shadow:0 1px 6px rgba(0,0,0,.8);
+  text-align:center;line-height:1.2;
+}
+
 /* ══ WIN ══ */
 #winOverlay{position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;background:rgba(8,3,20,.88);padding:1rem;overflow-y:auto;}
 #winOverlay.active{display:flex;}
@@ -315,28 +361,7 @@ body{font-family:'Nunito','Baloo 2',sans-serif;background:#1a0a2e;min-height:100
           <div id="clues-down"></div>
         </div>
       </div>
-      <div id="robot-inline-wrap" class="robot-wrap">
-        <div class="bubble" id="bubble" role="status" aria-live="polite">Clica numa pista! ✏️</div>
-        <svg id="vb-robot" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" role="button" tabindex="0" aria-label="VanBerto">
-          <defs>
-            <linearGradient id="gbg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e5f2ff"/><stop offset="100%" stop-color="#bfdbfe"/></linearGradient>
-            <linearGradient id="gvg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#38bdf8"/></linearGradient>
-          </defs>
-          <circle cx="40" cy="40" r="34" fill="rgba(147,197,253,0.35)"/>
-          <rect x="18" y="30" width="44" height="32" rx="14" fill="url(#gbg2)"/>
-          <circle cx="40" cy="46" r="7" fill="#9ca3af"/>
-          <rect x="22" y="10" width="36" height="26" rx="13" fill="url(#gbg2)"/>
-          <rect x="26" y="15" width="28" height="16" rx="8" fill="url(#gvg2)"/>
-          <rect class="vb-eyelid" x="26" y="15" width="28" height="16" rx="8" fill="#e5f2ff" opacity="0.9"/>
-          <circle cx="33" cy="23" r="2.5" fill="#0f172a"/><circle cx="47" cy="23" r="2.5" fill="#0f172a"/>
-          <circle cx="34.2" cy="21.5" r="1" fill="white" opacity="0.8"/><circle cx="48.2" cy="21.5" r="1" fill="white" opacity="0.8"/>
-          <line x1="40" y1="10" x2="40" y2="4" stroke="#38bdf8" stroke-width="2"/><circle cx="40" cy="3" r="2.5" fill="#38bdf8"/>
-          <rect x="12" y="34" width="6" height="20" rx="3" fill="#e5e7eb"/>
-          <rect class="vb-arm" x="62" y="34" width="6" height="20" rx="3" fill="#e5e7eb"/>
-          <rect x="22" y="58" width="12" height="8" rx="3" fill="#1f2937"/><rect x="46" y="58" width="12" height="8" rx="3" fill="#1f2937"/>
-        </svg>
-        <div class="robot-name" id="robot-player-name">👤 Herói</div>
-      </div>
+
     </div><!-- end .sidebar -->
   </div><!-- end .game-layout -->
 </div><!-- end #gameScreen -->
@@ -355,6 +380,30 @@ body{font-family:'Nunito','Baloo 2',sans-serif;background:#1a0a2e;min-height:100
       <button id="btnWinMenu" class="btn">🏠 Menu</button>
     </div>
   </div>
+</div>
+
+<!-- ROBOT FLUTUANTE FIXO -->
+<div id="fixed-robot-wrap">
+  <div id="fixed-bubble" role="status" aria-live="polite">Clica numa pista! ✏️</div>
+  <svg id="fixed-vb-robot" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" role="button" tabindex="0" aria-label="VanBerto — clica para falar">
+    <defs>
+      <linearGradient id="frbg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e5f2ff"/><stop offset="100%" stop-color="#bfdbfe"/></linearGradient>
+      <linearGradient id="frvg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#38bdf8"/></linearGradient>
+    </defs>
+    <circle cx="40" cy="40" r="34" fill="rgba(147,197,253,0.35)"/>
+    <rect x="18" y="30" width="44" height="32" rx="14" fill="url(#frbg2)"/>
+    <circle cx="40" cy="46" r="7" fill="#9ca3af"/>
+    <rect x="22" y="10" width="36" height="26" rx="13" fill="url(#frbg2)"/>
+    <rect x="26" y="15" width="28" height="16" rx="8" fill="url(#frvg2)"/>
+    <rect class="vb-eyelid" x="26" y="15" width="28" height="16" rx="8" fill="#e5f2ff" opacity="0.9"/>
+    <circle cx="33" cy="23" r="2.5" fill="#0f172a"/><circle cx="47" cy="23" r="2.5" fill="#0f172a"/>
+    <circle cx="34.2" cy="21.5" r="1" fill="white" opacity="0.8"/><circle cx="48.2" cy="21.5" r="1" fill="white" opacity="0.8"/>
+    <line x1="40" y1="10" x2="40" y2="4" stroke="#38bdf8" stroke-width="2"/><circle cx="40" cy="3" r="2.5" fill="#38bdf8"/>
+    <rect x="12" y="34" width="6" height="20" rx="3" fill="#e5e7eb"/>
+    <rect class="vb-arm" x="62" y="34" width="6" height="20" rx="3" fill="#e5e7eb"/>
+    <rect x="22" y="58" width="12" height="8" rx="3" fill="#1f2937"/><rect x="46" y="58" width="12" height="8" rx="3" fill="#1f2937"/>
+  </svg>
+  <div id="fixed-robot-name">👤 Herói</div>
 </div>
 
 <div id="confetti" class="hidden"></div>
@@ -563,7 +612,45 @@ function getMobileTA() {
 
 function activateMobileInput(r, c) {
   const inp = getInput(r,c);
-  if (!inp || inp.disabled) return;
+  if (!inp) return;
+
+  // Find all words that pass through this cell
+  const candidates = CLUE_WORDS.filter(w => {
+    for (let i=0;i<w.w.length;i++) {
+      const wr = w.d==='down'? w.r+i : w.r;
+      const wc = w.d==='across'? w.c+i : w.c;
+      if (wr===r && wc===c) return true;
+    }
+    return false;
+  });
+
+  // If clicking same cell OR cell is correct — always allow direction toggle
+  const sameCellOrCorrect = (mobileR === r && mobileC === c) || inp.disabled;
+  if (sameCellOrCorrect && activeWord && candidates.length > 1) {
+    const currentIdx = candidates.findIndex(w => w === activeWord);
+    if (currentIdx !== -1) {
+      const next = candidates[(currentIdx + 1) % candidates.length];
+      highlight(next);
+      setActiveCell(r, c);
+      // still focus the textarea so keyboard stays open
+      const ta = getMobileTA();
+      ta.value = '';
+      requestAnimationFrame(() => { ta.focus(); setTimeout(() => { mobileReady = true; }, 120); });
+      return;
+    }
+  }
+
+  // Normal cell activation (skip if disabled and no toggle happened)
+  if (inp.disabled) {
+    // cell is correct but only one word — just highlight that word
+    if (candidates.length === 1) {
+      highlight(candidates[0]);
+      setActiveCell(r, c);
+      mobileR = r; mobileC = c;
+    }
+    return;
+  }
+
   mobileR = r; mobileC = c;
   mobileReady = false;
   onFocus(r, c);
@@ -571,7 +658,6 @@ function activateMobileInput(r, c) {
   ta.value = '';
   requestAnimationFrame(() => {
     ta.focus();
-    // Small delay before accepting input — avoids phantom events from iOS/Android
     setTimeout(() => { mobileReady = true; }, 120);
   });
 }
@@ -586,7 +672,7 @@ function highlight(wobj) {
     const r = wobj.d==='down'? wobj.r+i : wobj.r;
     const c = wobj.d==='across'? wobj.c+i : wobj.c;
     const el = getCell(r,c);
-    if (el && !el.classList.contains('correct')) el.classList.add('active-word');
+    if (el) el.classList.add('active-word');
   }
   document.querySelectorAll('.clue-item').forEach(el=>el.classList.remove('active'));
   const key = wordKey(wobj);
@@ -617,12 +703,12 @@ function onFocus(r, c) {
   if (candidates.length === 1) {
     chosen = candidates[0];
   } else {
-    // if active word passes through this cell, keep it selected
+    // if active word passes through this cell, keep it (toggle handled in pointerdown)
     const keepCurrent = candidates.find(w => w === activeWord);
     if (keepCurrent) {
       chosen = keepCurrent;
     } else {
-      // pick across first, then down (more natural reading order)
+      // new cell — pick across first, then down
       chosen = candidates.find(w => w.d==='across') || candidates[0];
     }
   }
@@ -844,9 +930,9 @@ document.getElementById('btnStart').addEventListener('click', () => {
   playerName = document.getElementById('playerName').value.trim() || 'Herói das Crianças';
   document.getElementById('startScreen').classList.remove('active');
   document.getElementById('gameScreen').classList.add('active');
-  document.getElementById('robot-player-name').textContent = '👤 '+playerName;
-  document.getElementById('robot-inline-wrap').classList.add('visible');
-  document.getElementById('bubble').textContent = 'Vamos lá, ' + playerName + '! 🎈';
+  document.getElementById('fixed-robot-name').textContent = '👤 '+playerName;
+  document.getElementById('fixed-robot-wrap').classList.add('visible');
+  showBub('Vamos lá, ' + playerName + '! 🎈');
   buildGrid();
 });
 document.getElementById('btn-restart').addEventListener('click', ()=>{
@@ -862,7 +948,7 @@ function goMenu() {
   document.getElementById('gameScreen').classList.remove('active');
   document.getElementById('winOverlay').classList.remove('active');
   document.getElementById('startScreen').classList.add('active');
-  document.getElementById('robot-inline-wrap').classList.remove('visible');
+  document.getElementById('fixed-robot-wrap').classList.remove('visible');
   stopConf();
 }
 let resT, lastInnerW = window.innerWidth;
@@ -920,9 +1006,12 @@ function stopConf(){clearInterval(cInt);const el=document.getElementById('confet
 
 /* ══ ROBOT ══ */
 const MSGS=['Clica numa pista e escreve! ✏️','Vamos lá, és incrível! 🌟','Não desistas, consegues! 💪','Usa a dica! 💡','As letras cruzam-se! 🔤','Dia da Criança, dia especial! 🎈','Já estás quase! Força! 🚀','Que jogador fantástico! 🏆'];
+function showBub(msg){
+  const b=document.getElementById('fixed-bubble');
+  if(b){b.textContent=msg;b.classList.add('show');clearTimeout(bubT);bubT=setTimeout(()=>b.classList.remove('show'),3500);}
+}
 let bubT=null;
-function showBub(msg){const b=document.getElementById('bubble');if(b)b.textContent=msg;}
-const vbR=document.getElementById('vb-robot');
+const vbR=document.getElementById('fixed-vb-robot');
 vbR.addEventListener('click',()=>{vbR.classList.remove('bounce');void vbR.offsetWidth;vbR.classList.add('bounce');showBub(MSGS[Math.floor(Math.random()*MSGS.length)]);});
 vbR.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){vbR.classList.remove('bounce');void vbR.offsetWidth;vbR.classList.add('bounce');showBub(MSGS[Math.floor(Math.random()*MSGS.length)]);}});
 setInterval(()=>{if(document.getElementById('gameScreen').classList.contains('active')&&solved.size<CLUE_WORDS.length){const m=['Força! Já descobriste '+solved.size+'! 💪','Continua! Estás a arrasar! 🌟','Consegues! Não desistas! 🎯'];showBub(m[Math.floor(Math.random()*m.length)]);}},20000);
