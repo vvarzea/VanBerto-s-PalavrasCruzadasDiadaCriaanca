@@ -181,7 +181,7 @@ body{font-family:'Nunito','Baloo 2',sans-serif;background:#1a0a2e;min-height:100
   bottom:clamp(.6rem,2vh,1.2rem);
   right:clamp(.6rem,2vw,1.2rem);
   z-index:650;
-  display:none;
+  display:flex;
   flex-direction:column;
   align-items:center;
   gap:2px;
@@ -340,27 +340,6 @@ body{font-family:'Nunito','Baloo 2',sans-serif;background:#1a0a2e;min-height:100
 <!-- ECRÃ INICIAL -->
 <div id="startScreen" class="screen active">
   <div class="modal-card">
-    <div class="modal-robot-row">
-      <svg class="modal-robot" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="sbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e5f2ff"/><stop offset="100%" stop-color="#bfdbfe"/></linearGradient>
-          <linearGradient id="svg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#38bdf8"/></linearGradient>
-        </defs>
-        <circle cx="40" cy="40" r="34" fill="rgba(147,197,253,0.28)"/>
-        <rect x="18" y="30" width="44" height="32" rx="14" fill="url(#sbg)"/>
-        <circle cx="40" cy="46" r="7" fill="#9ca3af"/>
-        <rect x="22" y="10" width="36" height="26" rx="13" fill="url(#sbg)"/>
-        <rect x="26" y="15" width="28" height="16" rx="8" fill="url(#svg2)"/>
-        <rect class="modal-eyelid" x="26" y="15" width="28" height="16" rx="8" fill="#e5f2ff" opacity="0.9"/>
-        <circle cx="33" cy="23" r="2.5" fill="#0f172a"/><circle cx="47" cy="23" r="2.5" fill="#0f172a"/>
-        <circle cx="34.2" cy="21.5" r="1" fill="white" opacity="0.8"/><circle cx="48.2" cy="21.5" r="1" fill="white" opacity="0.8"/>
-        <line x1="40" y1="10" x2="40" y2="4" stroke="#38bdf8" stroke-width="2"/><circle cx="40" cy="3" r="2.5" fill="#38bdf8"/>
-        <rect x="12" y="34" width="6" height="20" rx="3" fill="#e5e7eb"/>
-        <rect class="modal-robot-arm" x="62" y="34" width="6" height="20" rx="3" fill="#e5e7eb"/>
-        <rect x="22" y="58" width="12" height="8" rx="3" fill="#1f2937"/><rect x="46" y="58" width="12" height="8" rx="3" fill="#1f2937"/>
-      </svg>
-      <div class="modal-bubble-box">Descobre as palavras cruzadas! ✏️🎈</div>
-    </div>
     <div class="modal-title">✏️ Palavras Cruzadas<br>Dia da Criança</div>
     <div class="name-row">
       <label for="playerName">O teu nome:</label>
@@ -987,7 +966,7 @@ function goMenu() {
   document.getElementById('gameScreen').classList.remove('active');
   document.getElementById('winOverlay').classList.remove('active');
   document.getElementById('startScreen').classList.add('active');
-  document.getElementById('fixed-robot-wrap').classList.remove('visible');
+  showBub('Descobre as palavras cruzadas! ✏️🎈');
   stopConf();
 }
 let resT, lastInnerW = window.innerWidth;
@@ -1054,6 +1033,9 @@ const vbR=document.getElementById('fixed-vb-robot');
 vbR.addEventListener('click',()=>{vbR.classList.remove('bounce');void vbR.offsetWidth;vbR.classList.add('bounce');showBub(MSGS[Math.floor(Math.random()*MSGS.length)]);});
 vbR.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){vbR.classList.remove('bounce');void vbR.offsetWidth;vbR.classList.add('bounce');showBub(MSGS[Math.floor(Math.random()*MSGS.length)]);}});
 setInterval(()=>{if(document.getElementById('gameScreen').classList.contains('active')&&solved.size<CLUE_WORDS.length){const m=['Força! Já descobriste '+solved.size+'! 💪','Continua! Estás a arrasar! 🌟','Consegues! Não desistas! 🎯'];showBub(m[Math.floor(Math.random()*m.length)]);}},20000);
+
+// Mensagem de boas-vindas ao iniciar
+setTimeout(()=>showBub('Descobre as palavras cruzadas! ✏️🎈'), 600);
 
 /* ══ FULLSCREEN ══ */
 const btnFS = document.getElementById('btn-fullscreen');
