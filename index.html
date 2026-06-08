@@ -428,6 +428,40 @@ body{font-family:'Nunito','Baloo 2',sans-serif;background:#1a0a2e;min-height:100
 <script>
 'use strict';
 
+/* ══ SONS ══ */
+let audioCtx=null;
+function getAC(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function playWordFound(){
+  try{
+    const ac=getAC();
+    [[523.25,0],[659.25,.08],[783.99,.16]].forEach(([freq,delay])=>{
+      const o=ac.createOscillator(),g=ac.createGain();
+      o.connect(g);g.connect(ac.destination);
+      o.type='sine';o.frequency.value=freq;
+      const t=ac.currentTime+delay;
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(.28,t+.02);
+      g.gain.exponentialRampToValueAtTime(.001,t+.32);
+      o.start(t);o.stop(t+.35);
+    });
+  }catch(e){}
+}
+function playWin(){
+  try{
+    const ac=getAC();
+    [[523.25,0,.18],[659.25,.18,.18],[783.99,.36,.18],[1046.5,.54,.35]].forEach(([freq,delay,dur])=>{
+      const o=ac.createOscillator(),g=ac.createGain();
+      o.connect(g);g.connect(ac.destination);
+      o.type='triangle';o.frequency.value=freq;
+      const t=ac.currentTime+delay;
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(.32,t+.03);
+      g.gain.exponentialRampToValueAtTime(.001,t+dur);
+      o.start(t);o.stop(t+dur+.05);
+    });
+  }catch(e){}
+}
+
 /* ══════════════════════════════════════
    PUZZLE — verified no-conflict grid
    Grid offset: subtract min col (1) → display col = col - 1
@@ -520,9 +554,13 @@ function _renderGrid() {
   el.style.gridTemplateColumns = `repeat(${COLS}, ${cs}px)`;
   el.style.gap = gap+'px';
 
-  // number map: "r,c" -> number
+  // number map: "r,c" -> sorted array of word nums starting there
   const numMap = {};
-  WORDS.forEach(({n,r,c}) => { numMap[`${r},${c}`] = n; });
+  WORDS.forEach(w => {
+    const key = `${w.r},${w.c}`;
+    if (!numMap[key]) numMap[key] = [];
+    if (!numMap[key].includes(w.n)) numMap[key].push(w.n);
+  });
 
   for (let r=0; r<ROWS; r++) {
     for (let dc=0; dc<COLS; dc++) {
@@ -537,10 +575,10 @@ function _renderGrid() {
         cell.classList.add('empty');
       } else {
         cell.classList.add('letter');
-        if (numMap[`${r},${c}`] !== undefined) {
+        if (numMap[`${r},${c}`]) {
           const num = document.createElement('span');
           num.className = 'cw-num';
-          num.textContent = numMap[`${r},${c}`];
+          num.textContent = numMap[`${r},${c}`].sort((a,b)=>a-b).join('/');
           cell.appendChild(num);
         }
         const inp = document.createElement('input');
@@ -642,14 +680,18 @@ function activateMobileInput(r, c) {
     return false;
   });
 
-  // If clicking same cell OR cell is correct — always allow direction toggle
-  const sameCellOrCorrect = (mobileR === r && mobileC === c) || inp.disabled;
-  if (sameCellOrCorrect && activeWord && candidates.length > 1) {
+  // Find words that START at this cell (not just pass through)
+  const startsHere = candidates.filter(w => w.r === r && w.c === c);
+
+  // Toggle direction if: same cell tapped again, OR two words start here (like 6/8)
+  const shouldToggle = (mobileR === r && mobileC === c) || (startsHere.length > 1 && activeWord && startsHere.includes(activeWord));
+  if (shouldToggle && activeWord && candidates.length > 1) {
     const currentIdx = candidates.findIndex(w => w === activeWord);
     if (currentIdx !== -1) {
       const next = candidates[(currentIdx + 1) % candidates.length];
       highlight(next);
       setActiveCell(r, c);
+      mobileR = r; mobileC = c;
       // still focus the textarea so keyboard stays open
       const ta = getMobileTA();
       ta.value = '';
@@ -721,12 +763,12 @@ function onFocus(r, c) {
   if (candidates.length === 1) {
     chosen = candidates[0];
   } else {
-    // if active word passes through this cell, keep it (toggle handled in pointerdown)
+    // Always keep active word if it passes through this cell — never auto-switch mid-typing
     const keepCurrent = candidates.find(w => w === activeWord);
     if (keepCurrent) {
       chosen = keepCurrent;
     } else {
-      // new cell — pick across first, then down
+      // No active word passes through here — pick across first, then down
       chosen = candidates.find(w => w.d==='across') || candidates[0];
     }
   }
@@ -791,9 +833,9 @@ function moveNext(r,c) {
   // find next non-disabled cell after current position
   for (let i=idx+1; i<cells.length; i++) {
     const inp = getInput(cells[i].r, cells[i].c);
-    if (inp && !inp.disabled) { 
-      mobileR = cells[i].r; mobileC = cells[i].c;
-      focusCell(cells[i].r, cells[i].c); return; 
+    if (inp && !inp.disabled) {
+      mobileR = -1; mobileC = -1; // reset so activateMobileInput doesn't treat next cell as "same cell click"
+      focusCell(cells[i].r, cells[i].c); return;
     }
   }
   // all remaining cells done — stay put
@@ -845,6 +887,7 @@ function checkWords(announce) {
     }
   });
   if (newlySolved.length) {
+    playWordFound();
     const w = newlySolved[0];
     const msgs=['Boa! '+w.w+'! 🎉',''+w.w+'! Incrível! 🌟','Correto! '+w.w+' ✅','Muito bem! '+w.w+' 💪'];
     showBub(msgs[Math.floor(Math.random()*msgs.length)]);
@@ -931,6 +974,7 @@ document.getElementById('btn-check').addEventListener('click', () => {
 
 /* ══ WIN ══ */
 function showWin() {
+  playWin();
   const elapsed = Math.round((Date.now()-startTime)/1000);
   const m=Math.floor(elapsed/60), s=elapsed%60;
   document.getElementById('winName').textContent = playerName;
@@ -954,9 +998,6 @@ document.getElementById('btnStart').addEventListener('click', () => {
   buildGrid();
 });
 document.getElementById('btn-restart').addEventListener('click', ()=>{
-  if (solved.size > 0) {
-    if (!confirm('Tens ' + solved.size + ' palavra(s) descoberta(s). Tens a certeza que queres começar de novo?')) return;
-  }
   buildGrid(); showBub('Novo jogo! Bora lá! 🎈');
 });
 document.getElementById('btn-menu').addEventListener('click', goMenu);
