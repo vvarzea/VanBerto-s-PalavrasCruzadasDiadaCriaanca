@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-PT" xml:lang="pt-PT" translate="no">
-<head>
-<meta charset="UTF-8"/>
-<meta http-equiv="Content-Language" content="pt-PT"/>
-<meta name="language" content="pt-PT"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<!-- saved from url=(0067)https://resolution-scaler.preview.emergentagent.com/jogo/index.html -->
+<html lang="pt-PT" xml:lang="pt-PT" translate="no" style="--game-scale: 1.1768518518518518;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="Content-Language" content="pt-PT">
+<meta name="language" content="pt-PT">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>VanBerto's — Palavras Cruzadas · Dia da Criança</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Baloo+2:wght@700;800;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+<link href="./index_files/css2" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -330,9 +330,61 @@ body{font-family:'Nunito','Baloo 2',sans-serif;background:#1a0a2e;min-height:100
   .sidebar{min-width:240px;max-width:300px;}
   .clue-item{font-size:.8rem;}
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   PC RESPONSIVE SCALE SYSTEM — reference 1920×1080
+   Mobile (≤700px): wrapper is transparent, layout flows normally.
+   Desktop (>700px): wrapper becomes a fixed 1920×1080 stage that is
+   uniformly scaled with transform: scale(min(iw/1920, ih/1080)).
+   Game logic is untouched — only visual scaling.
+   ════════════════════════════════════════════════════════════════════ */
+#scale-wrap{width:100%;}
+
+@media(min-width:701px){
+  html,body{
+    width:100vw;height:100vh;height:100dvh;
+    overflow:hidden;
+    margin:0;
+  }
+  body{
+    /* Letterbox background fills any leftover space around scaled stage */
+    background:#0a0414;
+  }
+  #scale-wrap{
+    position:absolute;
+    top:0;left:0;
+    width:1920px;
+    height:1080px;
+    transform-origin:top left;
+    transform:scale(1);
+    will-change:transform;
+  }
+  /* Inside scaled stage, screens must fill the 1080px height,
+     NOT the actual viewport (which can be smaller). */
+  #scale-wrap .screen{
+    min-height:1080px!important;
+    max-height:1080px;
+    height:1080px;
+  }
+  #scale-wrap #gameScreen{
+    overflow-y:auto;
+  }
+  /* Win overlay & confetti must cover only the stage, not the raw viewport */
+  #scale-wrap #winOverlay{
+    position:absolute;
+    inset:0;
+  }
+  #scale-wrap #confetti{
+    position:absolute;
+    inset:0;
+  }
+  /* Fixed robot & prof tag are positioned relative to the stage
+     (transform on ancestor establishes containing block for fixed). */
+}
 </style>
 </head>
 <body lang="pt-PT">
+<div id="scale-wrap" style="transform-origin: left top; transform: translate(150.222px, 0px) scale(1.17685);">
 
 <!-- PROFESSORA TAG -->
 <div id="prof-tag">© Professora Vanda Várzea</div>
@@ -343,7 +395,7 @@ body{font-family:'Nunito','Baloo 2',sans-serif;background:#1a0a2e;min-height:100
     <div class="modal-title">✏️ Palavras Cruzadas<br>Dia da Criança</div>
     <div class="name-row">
       <label for="playerName">O teu nome:</label>
-      <input type="text" id="playerName" maxlength="22" placeholder="Escreve o teu nome…" autocomplete="off" lang="pt-PT" spellcheck="true" inputmode="text"/>
+      <input type="text" id="playerName" maxlength="22" placeholder="Escreve o teu nome…" autocomplete="off" lang="pt-PT" spellcheck="true" inputmode="text">
     </div>
     <div class="row">
       <button id="btnStart" class="btn primary">▶ Começar a jogar!</button>
@@ -355,7 +407,7 @@ body{font-family:'Nunito','Baloo 2',sans-serif;background:#1a0a2e;min-height:100
 <!-- JOGO -->
 <div id="gameScreen" class="screen">
   <div class="game-top">
-    <div id="score-inline" style="font-family:'Baloo 2',sans-serif;font-size:.82rem;font-weight:900;color:#ffb890;"></div>
+    <div id="score-inline" style="font-family:&#39;Baloo 2&#39;,sans-serif;font-size:.82rem;font-weight:900;color:#ffb890;"></div>
     <div class="header-actions">
       <button class="btn btn-sm" id="btn-hint">💡 Dica (<span id="hints-left">3</span>)</button>
       <button class="btn btn-sm" id="btn-check">✅ Verificar</button>
@@ -401,32 +453,88 @@ body{font-family:'Nunito','Baloo 2',sans-serif;background:#1a0a2e;min-height:100
 
 <!-- ROBOT FLUTUANTE FIXO -->
 <div id="fixed-robot-wrap">
-  <div id="fixed-bubble" role="status" aria-live="polite">Clica numa pista! ✏️</div>
+  <div id="fixed-bubble" role="status" aria-live="polite" class="">Descobre as palavras cruzadas! ✏️🎈</div>
   <svg id="fixed-vb-robot" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" role="button" tabindex="0" aria-label="VanBerto — clica para falar">
     <defs>
-      <linearGradient id="frbg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e5f2ff"/><stop offset="100%" stop-color="#bfdbfe"/></linearGradient>
-      <linearGradient id="frvg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#38bdf8"/></linearGradient>
+      <lineargradient id="frbg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e5f2ff"></stop><stop offset="100%" stop-color="#bfdbfe"></stop></lineargradient>
+      <lineargradient id="frvg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#22d3ee"></stop><stop offset="100%" stop-color="#38bdf8"></stop></lineargradient>
     </defs>
-    <circle cx="40" cy="40" r="34" fill="rgba(147,197,253,0.35)"/>
-    <rect x="18" y="30" width="44" height="32" rx="14" fill="url(#frbg2)"/>
-    <circle cx="40" cy="46" r="7" fill="#9ca3af"/>
-    <rect x="22" y="10" width="36" height="26" rx="13" fill="url(#frbg2)"/>
-    <rect x="26" y="15" width="28" height="16" rx="8" fill="url(#frvg2)"/>
-    <rect class="vb-eyelid" x="26" y="15" width="28" height="16" rx="8" fill="#e5f2ff" opacity="0.9"/>
-    <circle cx="33" cy="23" r="2.5" fill="#0f172a"/><circle cx="47" cy="23" r="2.5" fill="#0f172a"/>
-    <circle cx="34.2" cy="21.5" r="1" fill="white" opacity="0.8"/><circle cx="48.2" cy="21.5" r="1" fill="white" opacity="0.8"/>
-    <line x1="40" y1="10" x2="40" y2="4" stroke="#38bdf8" stroke-width="2"/><circle cx="40" cy="3" r="2.5" fill="#38bdf8"/>
-    <rect x="12" y="34" width="6" height="20" rx="3" fill="#e5e7eb"/>
-    <rect class="vb-arm" x="62" y="34" width="6" height="20" rx="3" fill="#e5e7eb"/>
-    <rect x="22" y="58" width="12" height="8" rx="3" fill="#1f2937"/><rect x="46" y="58" width="12" height="8" rx="3" fill="#1f2937"/>
+    <circle cx="40" cy="40" r="34" fill="rgba(147,197,253,0.35)"></circle>
+    <rect x="18" y="30" width="44" height="32" rx="14" fill="url(#frbg2)"></rect>
+    <circle cx="40" cy="46" r="7" fill="#9ca3af"></circle>
+    <rect x="22" y="10" width="36" height="26" rx="13" fill="url(#frbg2)"></rect>
+    <rect x="26" y="15" width="28" height="16" rx="8" fill="url(#frvg2)"></rect>
+    <rect class="vb-eyelid" x="26" y="15" width="28" height="16" rx="8" fill="#e5f2ff" opacity="0.9"></rect>
+    <circle cx="33" cy="23" r="2.5" fill="#0f172a"></circle><circle cx="47" cy="23" r="2.5" fill="#0f172a"></circle>
+    <circle cx="34.2" cy="21.5" r="1" fill="white" opacity="0.8"></circle><circle cx="48.2" cy="21.5" r="1" fill="white" opacity="0.8"></circle>
+    <line x1="40" y1="10" x2="40" y2="4" stroke="#38bdf8" stroke-width="2"></line><circle cx="40" cy="3" r="2.5" fill="#38bdf8"></circle>
+    <rect x="12" y="34" width="6" height="20" rx="3" fill="#e5e7eb"></rect>
+    <rect class="vb-arm" x="62" y="34" width="6" height="20" rx="3" fill="#e5e7eb"></rect>
+    <rect x="22" y="58" width="12" height="8" rx="3" fill="#1f2937"></rect><rect x="46" y="58" width="12" height="8" rx="3" fill="#1f2937"></rect>
   </svg>
   <div id="fixed-robot-name">👤 Herói</div>
 </div>
 
 <div id="confetti" class="hidden"></div>
 
+</div><!-- end #scale-wrap -->
+
 <script>
 'use strict';
+
+/* ════════════════════════════════════════════════════════════════════
+   PC RESPONSIVE SCALE SYSTEM
+   Reference resolution: 1920 × 1080
+   Scale factor: Math.min(window.innerWidth / 1920, window.innerHeight / 1080)
+   - Applied ONLY on desktop (window.innerWidth > 700).
+   - Mobile/tablet small (≤700px) keep original responsive layout intact.
+   - Re-computes on every window resize event.
+   - Centers the scaled stage with letterbox.
+   ════════════════════════════════════════════════════════════════════ */
+(function(){
+  const MOBILE_BP = 700;
+  const REF_W = 1920;
+  const REF_H = 1080;
+
+  function applyScale(){
+    const wrap = document.getElementById('scale-wrap');
+    if(!wrap) return;
+    const iw = window.innerWidth;
+    const ih = window.innerHeight;
+
+    // Mobile: leave behaviour untouched, clear any inline scale.
+    if(iw <= MOBILE_BP){
+      wrap.style.transform = '';
+      wrap.style.transformOrigin = '';
+      document.documentElement.style.setProperty('--game-scale', 1);
+      return;
+    }
+
+    // Desktop / PC: uniform scale to fit reference 1920×1080 inside the window.
+    const scale = Math.min(iw / REF_W, ih / REF_H);
+    // Center the scaled stage (letterbox).
+    const offsetX = Math.max(0, (iw - REF_W * scale) / 2);
+    const offsetY = Math.max(0, (ih - REF_H * scale) / 2);
+    wrap.style.transformOrigin = 'top left';
+    wrap.style.transform =
+      'translate(' + offsetX + 'px,' + offsetY + 'px) scale(' + scale + ')';
+    document.documentElement.style.setProperty('--game-scale', scale);
+  }
+
+  // Recompute on resize (and orientation change) — debounced via rAF.
+  let rafId = null;
+  function onResize(){
+    if(rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(applyScale);
+  }
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', onResize);
+
+  // Initial application — run as soon as possible and again after fonts/layout settle.
+  applyScale();
+  window.addEventListener('load', applyScale);
+  document.addEventListener('DOMContentLoaded', applyScale);
+})();
 
 /* ══ SONS ══ */
 let audioCtx=null;
@@ -532,7 +640,9 @@ function _renderGrid() {
 
   const isMobile = window.innerWidth <= 700;
   const wrap = document.getElementById('cw-wrap');
-  let avail = wrap.getBoundingClientRect().width || wrap.offsetWidth;
+  // Use offsetWidth (unaffected by ancestor CSS transform) so the
+  // PC scale wrapper does not distort cell-size calculations.
+  let avail = wrap.offsetWidth || wrap.getBoundingClientRect().width;
 
   // If measurement not yet ready, estimate from window width
   if (avail < 40) {
@@ -1109,5 +1219,7 @@ document.addEventListener('fullscreenchange',onFSChange);
 document.addEventListener('webkitfullscreenchange',onFSChange);
 document.addEventListener('mozfullscreenchange',onFSChange);
 </script>
-</body>
-</html>
+<script defer="" src="./index_files/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;7f7b0fd8732c4326aae4b9d58d5c514a&quot;,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+
+
+</body></html>
