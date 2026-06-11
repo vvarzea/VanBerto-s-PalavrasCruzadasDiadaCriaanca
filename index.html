@@ -1186,7 +1186,8 @@ vbR.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){vbR.classLis
 setInterval(()=>{if(document.getElementById('gameScreen').classList.contains('active')&&solved.size<CLUE_WORDS.length){const m=['Força! Já descobriste '+solved.size+'! 💪','Continua! Estás a arrasar! 🌟','Consegues! Não desistas! 🎯'];showBub(m[Math.floor(Math.random()*m.length)]);}},20000);
 
 // Mensagem de boas-vindas ao iniciar
-setTimeout(()=>showBub('Descobre as palavras cruzadas! ✏️🎈'), 600);
+setTimeout(()=>showBub('Olá! Sou o VanBerto\'s! Preenche todas as palavras cruzadas! ✏️🎈'), 600);
+setTimeout(()=>showBub('Descobre as palavras cruzadas! ✏️🎈'), 4000);
 
 /* ══ FULLSCREEN ══ */
 const btnFS = document.getElementById('btn-fullscreen');
